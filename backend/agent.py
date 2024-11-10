@@ -33,13 +33,14 @@ def get_openai_datasets(query):
         ],
         response_format=DatasetsOutput,
     )
-    datasets_list = completion.choices[0].message.content
+    # datasets_list = completion.choices[0].message.content
 
     # can also get parsed version
-    # datasets_list = completion.choices[0].message.parsed.datasets
+    datasets_list = completion.choices[0].message.parsed.datasets
 
     return datasets_list
 
 if __name__ == "__main__":
     for dataset in get_openai_datasets("How does temperature and rainfall affect crops?"):
+        # print(f"{dataset.dataset_name}: {dataset.reason}")
         print(f"{dataset.dataset_name}: {dataset.reason}")
