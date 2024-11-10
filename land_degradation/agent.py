@@ -9,7 +9,7 @@ class DatasetOutput(BaseModel):
 class DatasetsOutput(BaseModel):
     datasets: list[DatasetOutput]
 
-def get_openai_datasets(query):
+def openai_select_datasets(query, return_json=True):
     api_key = os.getenv('OPENAI_API_KEY')
     openai = OpenAI(api_key=api_key)
 
@@ -17,7 +17,7 @@ def get_openai_datasets(query):
     system_prompt = (
         "Here is a list of datasets, along with short descriptions for each. You are a dataset router. "
         "When the user provides a query, you will provide a list of datasets that are relevant to the query, "
-        "along with an explanation of why this dataset may be relevant."
+        "along with an explanation of why this dataset may be relevant to what the user is asking for."
     )
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)
@@ -41,6 +41,6 @@ def get_openai_datasets(query):
     return datasets_list
 
 if __name__ == "__main__":
-    for dataset in get_openai_datasets("How does temperature and rainfall affect crops?"):
+    for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
         # print(f"{dataset.dataset_name}: {dataset.reason}")
         print(f"{dataset.dataset_name}: {dataset.reason}")

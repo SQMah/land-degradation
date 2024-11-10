@@ -1,6 +1,6 @@
 # views.py
 import os
-from agent import get_openai_datasets
+from .agent import openai_select_datasets
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,8 +22,8 @@ def search_datasets(request):
         )
     
     try:
-        datasets = get_openai_datasets(query)  
-        
+        datasets = openai_select_datasets(query)
+
         return Response({
             'query': query,
             'datasets': datasets
