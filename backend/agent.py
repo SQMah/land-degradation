@@ -65,27 +65,35 @@ def general_query(query):
         "your responses. If you do not know the answer to a question, "
         "say that you do not know. Do not make up an answer."
     )
+    cur_speaker = "user" # assistant
+    messages = []
+    for q in query:
+        messages.append({"role": cur_speaker, "content": q})
+        if cur_speaker == "user":
+            cur_speaker = "assistant"
+        else:
+            cur_speaker = "user"
 
     completion = openai.beta.chat.completions.parse(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": query},
-        ],
+        messages=messages,
     )
     route = completion.choices[0].message.content
     return route
 
 
 def query_router(q):
-    query_mode = get_query_mode(q)
+    assert q
+    last_query = q[-1]
+    query_mode = get_query_mode(last_query)
     if query_mode == QueryMode.DATASET:
-        payload = openai_select_datasets(q)
+        payload = openai_select_datasets(last_query)
     elif query_mode == QueryMode.INIT:
-        payload = openai_select_datasets(q)
+        payload = openai_select_datasets(last_query)
     elif query_mode == QueryMode.VIZUALIZE:
-        payload = plot_google_earth_engine_dataset(q)
+        payload = plot_google_earth_engine_dataset(last_query)
     else:
+        # general chat has all conversations from the past
         payload = general_query(q)
     return {
         "mode": query_mode.value,
