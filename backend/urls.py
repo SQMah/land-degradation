@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('api/search-datasets/', views.search_datasets, name='search_datasets'),
+    path('api/viz-data/', views.vizualize_dataset, name='vizualize_dataset'),
 ]
 
 # settings.py additions
