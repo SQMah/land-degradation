@@ -88,7 +88,7 @@ def query_router(q):
     else:
         payload = general_query(q)
     return {
-        "mode": query_mode,
+        "mode": query_mode.value,
         "payload": payload,
     }
 
@@ -141,7 +141,7 @@ def plot_google_earth_engine_dataset(dataset_name):
     if os.environ.get('USER') == "sqmah":
         ee.Initialize(project="ai-blocks-education")
     else:
-        ee.Initialize(project="ai-blocks-education")
+        ee.Initialize()
 
     images = ee.ImageCollection(dataset_name)
     images = images.limit(1000).mosaic()
