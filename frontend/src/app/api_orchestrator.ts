@@ -33,11 +33,13 @@ export default async function orchestrator(
   messages: Message[],
   state: { [key: string]: any }
 ): Promise<Message> {
-  console.log("Messages:", messages);
+  console.log(`State in orchestrator:`);
+  console.log(state);
+  const messageStringList = messages.map((message) => message.content);
   const res = await fetch(
-    `http://127.0.0.1:8000/api/query/?q=${
-      messages[messages.length - 1].content
-    }`
+    `http://127.0.0.1:8000/api/query/?q=${messageStringList}&state=${JSON.stringify(
+      state
+    )}`
   );
   if (!res.ok) {
     throw new Error(`Error: ${res.statusText}`);

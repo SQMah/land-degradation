@@ -4,6 +4,7 @@ import Dataset from "../components/Dataset";
 import { DATASET_MAP } from "../data/raw_datasets";
 import orchestrator, { Message, DatasetToolData } from "./api_orchestrator";
 import CircularLoader from "../components/CircularLoader";
+import { useDatasetContext } from "./context/DatasetContext";
 
 function TopBar() {
   return (
@@ -105,6 +106,7 @@ function BottomChat({
   setIsLoading,
 }: BottomChatProps) {
   const [input, setInput] = useState<string>("");
+  const { datasetState, updateDataset } = useDatasetContext();
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -122,7 +124,7 @@ function BottomChat({
     setMessages((prevMessages) => [...prevMessages, newMessage]); // Update with the current input
 
     try {
-      const data = await orchestrator([...messages, newMessage]); // Pass updated messages if needed
+      const data = await orchestrator([...messages, newMessage], datasetState); // Pass updated messages if needed
 
       if (data) {
         setMessages((prevMessages) => [...prevMessages, data]);
