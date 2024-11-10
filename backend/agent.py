@@ -57,87 +57,43 @@ def openai_select_datasets(query, return_json=True):
 def plot_google_earth_engine_dataset(dataset_name):
     """
     Given the dataset name (e.g. "COPERNICUS/S2"), visualize the dataset as a large
-    image and send that back
+    image and send back the HTML for iframing
     """
     images = ee.ImageCollection(dataset_name)
+    images = images.limit(1000).mosaic()
     # info = images.limit(5).getInfo()
     
     # For now, visualize the first image only
-    image = images.first()
+    # image = images.first()
 
-    roi = image.geometry()
-    breakpoint()
-    geemap.ee_export_image(
-        image, filename=dataset_name, scale=90, region=roi, file_per_band=True
-    )
+    dataset_name_no_slashes = dataset_name.replace("/", "_")
+    image_path = f"tmp/{dataset_name_no_slashes}.tif"
+    # TODO: make thi not just mongolia lol
+    roi = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')\
+        .filter(ee.Filter.eq('country_na', 'Mongolia'))\
+        .geometry()
+    # geemap.ee_export_image( image, filename=image_path, scale=90, region=roi, file_per_band=True)
+
+    vis_params = {
+        'min': -2.33,
+        'max': 2.33,
+        'palette': [
+            '8b1a1a', 'de2929', 'f3641d',
+            'fdc404', '9afa94', '03f2fd',
+            '12adf3', '1771de', '00008b',
+        ]
+    }
     earth_map = geemap.Map()
 
     earth_map.add_basemap('ROADMAP')
-    earth_map.addLayer(image, name=dataset_name)
-    earth_map.save('mymap.html')
+    earth_map.centerObject((roi), 4)
+    earth_map.addLayer(images.clip(roi), None, 'SPEI')
+    earth_map.save('tmp/map_html.html')
+    with open('tmp/map_html.html', 'r') as f:
+        html_str = f.read()
 
-    # # Define visualization parameters
-    # breakpoint()
-    # bands = image.bandNames().getInfo()
-    # vis_params = {
-    #     # 'bands': bands,
-    #     'bands': bands[0:3],
-    #     'min': 0,
-    #     'max': 3000,
-    # }
+    return html_str
 
-    # region = image.geometry().bounds().getInfo()['coordinates']
-
-    # # Get the image URL with visualization
-    # url = image.getThumbURL({
-    #     'region': region,
-    #     'dimensions': '1024x1024',  # Adjust resolution as needed
-    #     'format': 'jpg',
-    #     **vis_params
-    # })
-    # # Fetch the image and convert to JPEG
-    # response = requests.get(url)
-    # img = Image.open(BytesIO(response.content))
-    # img.show()  # For local testing, or save if needed
-
-    # # Save to file (optional)
-    # img.save("output.jpg", "JPEG")
-
-    # viz_params, center_lon, center_lat = get_visualization_params(image.getInfo())
-    # export_geometry = get_export_geometry(image.getInfo())
-
-    # earth_map = geemap.Map()
-
-    # earth_map.addLayer(image, viz_params, name=dataset_name)
-    # earth_map.setCenter(center_lon, center_lat, 10)
-
-    # dataset_name_no_slashes = dataset_name.replace("/", "_")
-    
-    # breakpoint()
-
-
-    # # save the map image 
-    # image_path = f"tmp/{dataset_name_no_slashes}.tif"
-    # breakpoint()
-    # use_np = False
-    # if use_np:
-    #     # Raw pixels of the map as numpy image
-    #     np_image = geemap.ee_to_numpy(image, scale=1000).mean(-1)
-    #     plt.imsave(image_path, np_image)
-    # else:
-    #     # image = image.clip(roi).unmask()
-    #     # geemap.ee_export_image( image, filename=image_path, scale=90, file_per_band=False, region=export_geometry)
-    #     export_task = ee.batch.Export.image.toAsset
-    #         image=image,
-    #         description="Exported_Image",
-    #         region=export_geometry,
-    #         scale=500,  # Set the export scale in meters (e.g., 500m per pixel)
-    #         maxPixels=1e13  # Optional: adjust if the image is very large
-    #     )
-    #     export_task.start()
-    # breakpoint()
-
-    
 def get_export_geometry(image_info):
     band_info = image_info['bands'][0]  # Use the first band for spatial extent details
     
@@ -189,12 +145,12 @@ def get_visualization_params(image_info):
     return viz_params, center_lon, center_lat
 
 if __name__ == "__main__":
-    for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
-        # print(f"{dataset.dataset_name}: {dataset.reason}")
-        selected_str = "selected" if dataset.selected else "not selected"
-        print(dataset.dataset_id)
-        print(f"{dataset.dataset_name}: {selected_str.upper()} {dataset.reason}")
+    # for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
+    #     # print(f"{dataset.dataset_name}: {dataset.reason}")
+    #     selected_str = "selected" if dataset.selected else "not selected"
+    #     print(dataset.dataset_id)
+    #     print(f"{dataset.dataset_name}: {selected_str.upper()} {dataset.reason}")
 
-    # test_dataset = "CSIC/SPEI/2_9"
-    # ee.Initialize()
-    # img = plot_google_earth_engine_dataset(test_dataset)
+    test_dataset = "CSIC/SPEI/2_9"
+    ee.Initialize()
+    img = plot_google_earth_engine_dataset(test_dataset)
