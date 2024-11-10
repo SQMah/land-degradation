@@ -52,6 +52,12 @@ export default async function orchestrator(
       },
     };
   }
+  if (messages.length == 3) {
+    const res = await fetch(`http://127.0.0.1:8000/api/viz-dataset`);
+    if (!res.ok) {
+      throw new Error(`Error: ${res.statusText}`);
+    }
+  }
   // const openai = createOpenAI({
   //   apiKey: process.env.OpenAI_API_KEY,
   //   compatibility: "strict", // strict mode, enable when using the OpenAI API
