@@ -1,9 +1,9 @@
 "use client";
 
 import { useChat } from "ai/react";
-import CircularProgress from "@mui/material/CircularProgress";
 import Dataset from "../components/Dataset";
 import { FormEventHandler, ChangeEventHandler } from "react";
+import { Message } from "@ai-sdk/ui-utils";
 
 const datasets = [
   {
@@ -76,6 +76,60 @@ function TopBar() {
   );
 }
 
+function UserBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex justify-end">
+      <div className="bg-blue-500 rounded-xl p-4 mb-4">{children}</div>
+    </div>
+  );
+}
+
+function ModelBubble({ children }: { children: React.ReactNode }) {
+  return <div className="p-4 mb-4">{children}</div>;
+}
+
+function ChatScroll(messages: Message[]) {
+  return (
+    <div className="flex-grow overflow-y-auto overflow-x-hidden w-full">
+      <div className="mx-auto w-[850px] flex flex-col">
+        {messages.map((message) => (
+          <div key={message.id}>
+            {message.role === "user" ? (
+              <UserBubble>{message.content}</UserBubble>
+            ) : (
+              <ModelBubble>{message.content}</ModelBubble>
+            )}
+          </div>
+        ))}
+        <ModelBubble>
+          <div className="grid grid-cols-3 gap-4 mx-auto">
+            {datasets.map((dataset) => (
+              <Dataset key={dataset.id} {...dataset} />
+            ))}
+          </div>
+        </ModelBubble>
+        <ModelBubble>bye</ModelBubble>
+      </div>
+      {/* {isLoading && (
+          <div>
+            <CircularProgress />
+            <button type="button" onClick={() => stop()}>
+              Stop
+            </button>
+          </div>
+        )} */}
+      {/* {error && (
+        <>
+          <div>An error occurred.</div>
+          <button type="button" onClick={() => reload()}>
+            Retry
+          </button>
+        </>
+      } */}
+    </div>
+  );
+}
+
 function BottomChat(
   handleSubmit: FormEventHandler<HTMLFormElement> | undefined,
   handleInputChange: ChangeEventHandler<HTMLInputElement> | undefined,
@@ -83,7 +137,7 @@ function BottomChat(
   isLoading: boolean | undefined
 ) {
   return (
-    <div className="flex items-center w-full p-4 bg-slate-850 relative p-4 shadow-[0_-4px_8px_rgba(0,0,0,0.1)]">
+    <div className="flex items-center w-full p-4 bg-slate-850 relative shadow-[0_-4px_8px_rgba(0,0,0,0.1)]">
       <div className="mx-auto w-[1050px]">
         <form onSubmit={handleSubmit} className="flex w-full m-4">
           <input
@@ -108,7 +162,7 @@ function BottomChat(
 }
 
 export default function Page() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       keepLastMessageOnError: true,
     });
@@ -116,37 +170,7 @@ export default function Page() {
   return (
     <div className="flex flex-col justify-center w-screen h-screen">
       {TopBar()}
-      <div className="flex-grow w-full overflow-y-auto overflow-x-hidden">
-        <div className="grid grid-cols-3 gap-4 mx-auto w-[850px]">
-          {datasets.map((dataset) => (
-            <Dataset key={dataset.id} {...dataset} />
-          ))}
-        </div>
-
-        {messages.map((message) => (
-          <div key={message.id}>
-            {message.role === "user" ? "User: " : "AI: "}
-            {message.content}
-          </div>
-        ))}
-
-        {isLoading && (
-          <div>
-            <CircularProgress />
-            <button type="button" onClick={() => stop()}>
-              Stop
-            </button>
-          </div>
-        )}
-        {/* {error && (
-        <>
-          <div>An error occurred.</div>
-          <button type="button" onClick={() => reload()}>
-            Retry
-          </button>
-        </>
-      } */}
-      </div>
+      {ChatScroll(messages)}
       {BottomChat(handleSubmit, handleInputChange, input, isLoading)}
     </div>
   );

@@ -37,7 +37,7 @@ export const CircularCheckmark = ({
         ${sizeClasses[size]}
         rounded-full
         flex items-center justify-center
-        transition-all duration-300 ease-in-out
+        transition-all duration-100 ease-in-out
         transform hover:scale-105
         focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2
         ${
@@ -53,7 +53,7 @@ export const CircularCheckmark = ({
       <Check
         size={iconSizes[size]}
         className={`
-          transition-all duration-300
+          transition-all duration-100
           ${isChecked ? "scale-100 opacity-100" : "scale-0 opacity-0"}
         `}
       />

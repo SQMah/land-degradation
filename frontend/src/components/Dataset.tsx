@@ -22,14 +22,14 @@ const Dataset = ({ name, id, img, description, reason, url }: DatasetProps) => {
       className={`
         w-[275px]
         relative p-6 rounded-xl border-2 cursor-pointer
-        transition-all duration-200 ease-in-out
+        transition-all duration-100 ease-in-out
         bg-gray-950 border-transparent
         ${selected ? "border-white" : ""}
         hover:shadow-[0_4px_10px_rgba(155,155,155,0.1)]
         pt-12
       `}
     >
-      <div className="absolute left-2 top-2">
+      <div className="absolute right-2 top-2">
         <CircularCheckmark
           size="sm"
           isChecked={selected}
