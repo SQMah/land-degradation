@@ -1,0 +1,82 @@
+[
+  {
+    "description": "The Global SPEI database (SPEIbase) offers long-time robust information about drought conditions at the global scale, with a 0.5 degree pixel size and monthly cadence. It provides SPEI time scales from 1 to 48 months. The Standardized Precipitatin-Evapotranspiration Index (SPEI) expresses, as a standardized variate (mean zero and unit variance), \u2026",
+    "name": "CSIC/SPEI/2_9",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/CSIC/CSIC_SPEI_2_9_sample.png",
+    "local_image_path": "dataset_thumbnails/CSIC_SPEI_2_9.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/CSIC_SPEI_2_9"
+  },
+  {
+    "description": "Penman-Monteith-Leuning Evapotranspiration V2 (PML_V2) products include evapotranspiration (ET), its three components, and gross primary product (GPP) at 500m and 8-day resolution during 2000-2023 and with spatial range from -60&deg;S to 90&deg;N. The major advantages of the PML_V2 products are: Coupled estimates of transpiration and GPP via canopy conductance (Gan et \u2026",
+    "name": "CAS/IGSNRR/PML/V2_v018",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/CAS/CAS_IGSNRR_PML_V2_v018_sample.png",
+    "local_image_path": "dataset_thumbnails/CAS_IGSNRR_PML_V2_v018.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/CAS_IGSNRR_PML_V2_v018"
+  },
+  {
+    "description": "The Advanced Spaceborne Thermal Emission and Reflection Radiometer (ASTER) is a multispectral imager that was launched on board NASA&#39;s Terra spacecraft in December, 1999. ASTER can collect data in 14 spectral bands from the visible to the thermal infrared. Each scene covers an area of 60 x 60 km. These \u2026",
+    "name": "ASTER/AST_L1T_003",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/ASTER/ASTER_AST_L1T_003_sample.png",
+    "local_image_path": "dataset_thumbnails/ASTER_AST_L1T_003.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/ASTER_AST_L1T_003"
+  },
+  {
+    "description": "Starting in 2009, the Earth Observation Team of the Science and Technology Branch (STB) at Agriculture and Agri-Food Canada (AAFC) began the process of generating annual crop type digital maps. Focusing on the Prairie Provinces in 2009 and 2010, a Decision Tree (DT) based methodology was applied using optical (Landsat-5, \u2026",
+    "name": "AAFC/ACI",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/AAFC/AAFC_ACI_sample.png",
+    "local_image_path": "dataset_thumbnails/AAFC_ACI.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/AAFC_ACI"
+  },
+  {
+    "description": "The Advanced Spaceborne Thermal Emission and Reflection Radiometer (ASTER) is a multispectral imager that was launched on board NASA&#39;s Terra spacecraft in December, 1999. ASTER can collect data in 14 spectral bands from the visible to the thermal infrared. Each scene covers an area of 60 x 60 km. These \u2026",
+    "name": "ASTER/AST_L1T_003",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/ASTER/ASTER_AST_L1T_003_sample.png",
+    "local_image_path": "dataset_thumbnails/ASTER_AST_L1T_003.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/ASTER_AST_L1T_003"
+  },
+  {
+    "description": "This dataset contains population estimates, by age and sex, per 30 arc-second grid cell consistent with national censuses and population registers. There is one image for each modeled age and sex category based on the 2010 round of Census. General Documentation The Gridded Population of World Version 4 (GPWv4), Revision \u2026",
+    "name": "CIESIN/GPWv411/GPW_Basic_Demographic_Characteristics",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/CIESIN/CIESIN_GPWv411_GPW_Basic_Demographic_Characteristics_sample.png",
+    "local_image_path": "dataset_thumbnails/CIESIN_GPWv411_GPW_Basic_Demographic_Characteristics.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/CIESIN_GPWv411_GPW_Basic_Demographic_Characteristics"
+  },
+  {
+    "description": "The Copernicus Global Land Service (CGLS) is earmarked as a component of the Land service to operate a multi-purpose service component that provides a series of bio-geophysical products on the status and evolution of land surface at global scale. The Dynamic Land Cover map at 100 m resolution (CGLS-LC100) is \u2026",
+    "name": "COPERNICUS/Landcover/100m/Proba-V-C3/Global",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/COPERNICUS/COPERNICUS_Landcover_100m_Proba-V-C3_Global_sample.png",
+    "local_image_path": "dataset_thumbnails/COPERNICUS_Landcover_100m_Proba-V-C3_Global.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_Landcover_100m_Proba-V-C3_Global"
+  },
+  {
+    "description": "ERA5 is the fifth generation ECMWF atmospheric reanalysis of the global climate. Reanalysis combines model data with observations from across the world into a globally complete and consistent dataset. ERA5 replaces its predecessor, the ERA-Interim reanalysis. ERA5 DAILY provides aggregated values for each day for seven ERA5 climate reanalysis parameters: \u2026",
+    "name": "ECMWF/ERA5/DAILY",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/ECMWF/ECMWF_ERA5_DAILY_sample.png",
+    "local_image_path": "dataset_thumbnails/ECMWF_ERA5_DAILY.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_DAILY"
+  },
+  {
+    "description": "The &quot;Tree Proximate People&quot; (TPP) is one of the datasets contributing to the development of indicator #13, number of forest-dependent people in extreme poverty, of the Collaborative Partnership on Forests (CPF) Global Core Set of forest-related indicators (GCS). The TPP dataset provides 4 different estimates of tree proximate people (trees \u2026",
+    "name": "FAO/SOFO/1/TPP",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/FAO/FAO_SOFO_1_TPP_sample.png",
+    "local_image_path": "dataset_thumbnails/FAO_SOFO_1_TPP.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/FAO_SOFO_1_TPP"
+  },
+  {
+    "description": "The Global Inland Water dataset shows inland surface water bodies, including fresh and saline lakes, rivers, and reservoirs. From the GLS 2000 epoch, 3,650,723 km2 of inland water were identified, around three quarters of which were in North America and Asia. Boreal forests and tundra hold the largest portion of \u2026",
+    "name": "GLCF/GLS_WATER",
+    "source": "google_earth_engine",
+    "thumbnail_url": "https://developers.google.com/earth-engine/datasets/images/GLCF/GLCF_GLS_WATER_sample.png",
+    "local_image_path": "dataset_thumbnails/GLCF_GLS_WATER.png",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/GLCF_GLS_WATER"
+  }
+]
