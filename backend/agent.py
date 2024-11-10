@@ -58,15 +58,23 @@ def get_query_mode(query):
 
 
 def general_query(query):
+    with open("datasets/dataset_info.json", "r") as json_file:
+        datasets = json.load(json_file)
+    dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
+
     api_key = os.getenv("OPENAI_API_KEY")
     openai = OpenAI(api_key=api_key)
     system_prompt = (
         "You are a expert data scientist. Be concise, precise, and factual in "
         "your responses. If you do not know the answer to a question, "
-        "say that you do not know. Do not make up an answer."
+        "say that you do not know. Do not make up an answer. You have access "
+        "and knowledge of the following datasets:\n"
+        f"{dataset_str}\n"
     )
     cur_speaker = "user" # assistant
-    messages = []
+    messages = [
+        {"role": "system", "content": system_prompt},
+    ]
     for q in query:
         messages.append({"role": cur_speaker, "content": q})
         if cur_speaker == "user":
