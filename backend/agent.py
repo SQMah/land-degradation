@@ -138,7 +138,10 @@ def plot_google_earth_engine_dataset(dataset_name):
     Given the dataset name (e.g. "COPERNICUS/S2"), visualize the dataset as a large
     image and send back the HTML for iframing
     """
-    ee.Initialize(project="ai-blocks-education")
+    if os.environ.get('USER') == "sqmah":
+        ee.Initialize(project="ai-blocks-education")
+    else:
+        ee.Initialize(project="ai-blocks-education")
 
     images = ee.ImageCollection(dataset_name)
     images = images.limit(1000).mosaic()
@@ -240,9 +243,9 @@ def get_visualization_params(image_info):
 
 if __name__ == "__main__":
     # Testing the query routing
-    query = "How does storm surge affect human health and migration patterns?"
-    response = query_router(query)
-    breakpoint()
+    # query = "How does storm surge affect human health and migration patterns?"
+    # response = query_router(query)
+    # breakpoint()
 
     # query = "How does storm surge affect human health and migration patterns?"
     # mode = get_query_mode(query)
@@ -254,6 +257,6 @@ if __name__ == "__main__":
     #     print(dataset.dataset_id)
     #     print(f"{dataset.dataset_name}: {selected_str.upper()} {dataset.reason}")
 
-    # test_dataset = "CSIC/SPEI/2_9"
-    # ee.Initialize()
-    # img = plot_google_earth_engine_dataset(test_dataset)
+    test_dataset = "CSIC/SPEI/2_9"
+    ee.Initialize()
+    img = plot_google_earth_engine_dataset(test_dataset)

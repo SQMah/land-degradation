@@ -53,8 +53,10 @@ def vizualize_dataset(request):
 @api_view(['GET'])
 def query(request):
     if 'query' in request.GET:
-        return query_router(request.GET['query'])
+        result =  query_router(request.GET['query'])
     elif 'q' in request.GET:
-        return query_router(request.GET['q'])
+        result = query_router(request.GET['q'])
     else:
         return JsonResponse({'error': 'Query is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    return JsonResponse(result, status=status.HTTP_200_OK)
