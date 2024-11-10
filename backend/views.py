@@ -1,7 +1,7 @@
 # views.py
 import os
-from .agent import openai_select_datasets
-from django.http import JsonResponse
+from .agent import openai_select_datasets, plot_google_earth_engine_dataset
+from django.http import JsonResponse, 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -40,5 +40,14 @@ def vizualize_dataset(request):
     dataset_id = request.GET.get('dataset_id', '')
     if not dataset_id:
         return JsonResponse({'error': 'Dataset ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        responses = plot_google_earth_engine_dataset(dataset_id)
+        return JsonResponse({
+            "type": "html",
+            "content": responses,
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
