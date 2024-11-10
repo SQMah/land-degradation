@@ -20,7 +20,7 @@ const Dataset = ({ name, id, img, description, reason, url }: DatasetProps) => {
     <div
       onClick={handleClick}
       className={`
-        w-[300px]
+        w-[275px]
         relative p-6 rounded-xl border-2 cursor-pointer
         transition-all duration-200 ease-in-out
         bg-gray-950 border-transparent

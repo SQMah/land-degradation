@@ -3,6 +3,7 @@
 import { useChat } from "ai/react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Dataset from "../components/Dataset";
+import { FormEventHandler, ChangeEventHandler } from "react";
 
 const datasets = [
   {
@@ -67,6 +68,45 @@ const datasets = [
   },
 ];
 
+function TopBar() {
+  return (
+    <div>
+      <h1 className="text-4xl font-semibold text-center p-8">Landnalyze</h1>
+    </div>
+  );
+}
+
+function BottomChat(
+  handleSubmit: FormEventHandler<HTMLFormElement> | undefined,
+  handleInputChange: ChangeEventHandler<HTMLInputElement> | undefined,
+  input: string | number | readonly string[] | undefined,
+  isLoading: boolean | undefined
+) {
+  return (
+    <div className="flex items-center w-full p-4 bg-slate-850 relative p-4 shadow-[0_-4px_8px_rgba(0,0,0,0.1)]">
+      <div className="mx-auto w-[1050px]">
+        <form onSubmit={handleSubmit} className="flex w-full m-4">
+          <input
+            name="prompt"
+            value={input}
+            onChange={handleInputChange}
+            disabled={isLoading}
+            className="flex-grow p-2 rounded-xl border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-800 mr-2"
+            placeholder="Ask me to find relationships between land degradation, drought, and people..."
+          />
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+          >
+            Analyze
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function Page() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({
@@ -74,29 +114,31 @@ export default function Page() {
     });
 
   return (
-    <div className="flex flex-col justify-center w-screen">
-      <div className="grid grid-cols-3 gap-4 mx-auto">
-        {datasets.map((dataset) => (
-          <Dataset key={dataset.id} {...dataset} />
+    <div className="flex flex-col justify-center w-screen h-screen">
+      {TopBar()}
+      <div className="flex-grow w-full overflow-y-auto overflow-x-hidden">
+        <div className="grid grid-cols-3 gap-4 mx-auto w-[850px]">
+          {datasets.map((dataset) => (
+            <Dataset key={dataset.id} {...dataset} />
+          ))}
+        </div>
+
+        {messages.map((message) => (
+          <div key={message.id}>
+            {message.role === "user" ? "User: " : "AI: "}
+            {message.content}
+          </div>
         ))}
-      </div>
 
-      {messages.map((message) => (
-        <div key={message.id}>
-          {message.role === "user" ? "User: " : "AI: "}
-          {message.content}
-        </div>
-      ))}
-
-      {isLoading && (
-        <div>
-          <CircularProgress />
-          <button type="button" onClick={() => stop()}>
-            Stop
-          </button>
-        </div>
-      )}
-      {/* {error && (
+        {isLoading && (
+          <div>
+            <CircularProgress />
+            <button type="button" onClick={() => stop()}>
+              Stop
+            </button>
+          </div>
+        )}
+        {/* {error && (
         <>
           <div>An error occurred.</div>
           <button type="button" onClick={() => reload()}>
@@ -104,16 +146,8 @@ export default function Page() {
           </button>
         </>
       } */}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          name="prompt"
-          value={input}
-          onChange={handleInputChange}
-          disabled={isLoading}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      </div>
+      {BottomChat(handleSubmit, handleInputChange, input, isLoading)}
     </div>
   );
 }
