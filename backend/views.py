@@ -49,13 +49,16 @@ def get_openai_datasets(query):
         datasets = json.load(json_file)
     dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
 
+    system_prompt += f"\nDatasets:\n{dataset_str}"
+
     completion = openai.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "The user will provide a "},
+            {"role": "system", "content": system_prompt},
             {
                 "role": "user",
-                "content": "query",
+                "content": query,
             }
         ]
     )
+    return json.loads(completion.choices[0].message.content)
