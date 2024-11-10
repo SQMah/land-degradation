@@ -1,3 +1,8 @@
+interface AgentResponse {
+  mode: string;
+  payload: any;
+}
+
 export interface ToolData {
   tooltype: "dataset" | "plot";
   data: DatasetToolData | PlotToolData;
@@ -27,16 +32,15 @@ export interface Message {
 export default async function orchestrator(
   messages: Message[]
 ): Promise<Message> {
-  if (messages.length === 1) {
-    // Get request from http://127.0.0.1:8000/
-    const res = await fetch(
-      `http://127.0.0.1:8000/api/search-datasets/?q=${messages[0].content}`
-    );
-    if (!res.ok) {
-      throw new Error(`Error: ${res.statusText}`);
-    }
-
-    const data = await res.json();
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/query/?q=${messages[-1].content}`
+  );
+  if (!res.ok) {
+    throw new Error(`Error: ${res.statusText}`);
+  }
+  let data = await res.json();
+  data = JSON.parse(data) as AgentResponse;
+  if (data.mode === "dataset" || data.mode === "init") {
     data.datasets = JSON.parse(data.datasets);
     data.datasets = data.datasets.datasets;
     console.log("Got data");
@@ -51,12 +55,16 @@ export default async function orchestrator(
         data: data as DatasetToolData,
       },
     };
-  }
-  if (messages.length == 3) {
-    const res = await fetch(`http://127.0.0.1:8000/api/viz-dataset`);
-    if (!res.ok) {
-      throw new Error(`Error: ${res.statusText}`);
-    }
+  } else if (data.mode === "visualize") {
+    return {
+      role: "assistant",
+      content: "Here are some visualizations of the dataset you selected:",
+      toolData: {
+        tooltype: "plot",
+        data: data as PlotToolData,
+      },
+    };
+  } else {
   }
   // const openai = createOpenAI({
   //   apiKey: process.env.OpenAI_API_KEY,

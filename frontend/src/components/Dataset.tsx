@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CircularCheckmark } from "./Checkmark";
+import { useDatasetContext } from "@/app/context/DatasetContext";
 
 interface DatasetProps {
   name: string;
@@ -20,10 +21,15 @@ const Dataset = ({
   url,
   wasSelected = false,
 }: DatasetProps) => {
+  const { datasetState, updateDataset } = useDatasetContext();
+  useEffect(() => {
+    updateDataset(id, wasSelected);
+  }, []); // Empty dependency array ensures this runs only on the first render
   const [selected, setSelected] = useState(wasSelected);
   const handleClick = () => {
+    updateDataset(id, !selected);
     setSelected(!selected);
-    console.log("Dataset selected:", name);
+    console.log(datasetState);
   };
 
   return (

@@ -19,6 +19,7 @@ class DatasetOutput(BaseModel):
 class DatasetsOutput(BaseModel):
     datasets: list[DatasetOutput]
 
+
 class QueryMode(Enum):
     DATASET = "dataset"
     INIT = "init"
@@ -26,8 +27,10 @@ class QueryMode(Enum):
     ANALYZE = "analyze"
     OTHER = "other"
 
+
 class QueryModeOutput(BaseModel):
     mode: QueryMode
+
 
 def get_query_mode(query):
     system_prompt = (
@@ -45,14 +48,8 @@ def get_query_mode(query):
     completion = openai.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": query
-            }
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": query},
         ],
         response_format=QueryModeOutput,
     )
@@ -72,18 +69,13 @@ def general_query(query):
     completion = openai.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": query
-            }
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": query},
         ],
     )
     route = completion.choices[0].message.content
     return route
+
 
 def query_router(q):
     query_mode = get_query_mode(q)
@@ -110,7 +102,7 @@ def openai_select_datasets(query, return_json=True):
         "Here is a list of datasets, along with short descriptions "
         "for each. You are a dataset router. When the user provides "
         "a query, decide whether each dataset is relevant to the query, "
-        "along with an explanation of why. Datasets can also be relevant to the query if they are knock on effects of the initial query. For example, if the user asks about drought, GPP might also be a relevant dataset as drought has downstream effects on GPP. Keep dataset name and "
+        "along with an explanation of why. Datasets can also be relevant to the query if they are knock on effects of the initial query. For example, if the user asks about drought, GPP or population might also be a relevant dataset as drought has downstream effects on GPP. Keep dataset name and "
         "dataset id the same."
     )
     with open("datasets/dataset_info.json", "r") as json_file:
@@ -146,7 +138,7 @@ def plot_google_earth_engine_dataset(dataset_name):
     Given the dataset name (e.g. "COPERNICUS/S2"), visualize the dataset as a large
     image and send back the HTML for iframing
     """
-    ee.Initialize()
+    ee.Initialize(project="ai-blocks-education")
 
     images = ee.ImageCollection(dataset_name)
     images = images.limit(1000).mosaic()
