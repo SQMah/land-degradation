@@ -1,6 +1,6 @@
 # views.py
 import os
-from .agent import openai_select_datasets, plot_google_earth_engine_dataset
+from .agent import openai_select_datasets, plot_google_earth_engine_dataset, query_router
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,13 +14,13 @@ def search_datasets(request):
     Expected query parameter: ?q=your_search_query
     """
     query = request.GET.get('q', '')
-    
+
     if not query:
         return Response(
             {'error': 'Query parameter "q" is required'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     try:
         datasets = openai_select_datasets(query)
 
@@ -50,8 +50,11 @@ def vizualize_dataset(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @api_view(['GET'])
-# def query(request):
-#     q = request.GET.get('query', '')
-
-    
+@api_view(['GET'])
+def query(request):
+    if 'query' in request.GET:
+        return query_router(request.GET['query'])
+    elif 'q' in request.GET:
+        return query_router(request.GET['q'])
+    else:
+        return JsonResponse({'error': 'Query is required'}, status=status.HTTP_400_BAD_REQUEST)
