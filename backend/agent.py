@@ -45,11 +45,14 @@ def openai_select_datasets(query, return_json=True):
         response_format=DatasetsOutput,
     )
     # datasets_list = completion.choices[0].message.content
+    if return_json:
+        return completion.choices[0].message.content
+    else:
 
-    # can also get parsed version
-    datasets_list = completion.choices[0].message.parsed.datasets
+        # can also get parsed version
+        datasets_list = completion.choices[0].message.parsed.datasets
 
-    return datasets_list
+        return datasets_list
 
 def plot_google_earth_engine_dataset(dataset_name):
     """
@@ -61,6 +64,12 @@ def plot_google_earth_engine_dataset(dataset_name):
     
     # For now, visualize the first image only
     image = images.first()
+
+    roi = image.geometry()
+    breakpoint()
+    geemap.ee_export_image(
+        image, filename=dataset_name, scale=90, region=roi, file_per_band=True
+    )
     earth_map = geemap.Map()
 
     earth_map.add_basemap('ROADMAP')
@@ -180,12 +189,12 @@ def get_visualization_params(image_info):
     return viz_params, center_lon, center_lat
 
 if __name__ == "__main__":
-    # for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
-    #     # print(f"{dataset.dataset_name}: {dataset.reason}")
-    #     selected_str = "selected" if dataset.selected else "not selected"
-    #     print(dataset.dataset_id)
-    #     print(f"{dataset.dataset_name}: {selected_str.upper()} {dataset.reason}")
+    for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
+        # print(f"{dataset.dataset_name}: {dataset.reason}")
+        selected_str = "selected" if dataset.selected else "not selected"
+        print(dataset.dataset_id)
+        print(f"{dataset.dataset_name}: {selected_str.upper()} {dataset.reason}")
 
-    test_dataset = "CSIC/SPEI/2_9"
-    ee.Initialize()
-    img = plot_google_earth_engine_dataset(test_dataset)
+    # test_dataset = "CSIC/SPEI/2_9"
+    # ee.Initialize()
+    # img = plot_google_earth_engine_dataset(test_dataset)
