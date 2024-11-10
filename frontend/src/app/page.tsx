@@ -3,11 +3,12 @@ import { useState } from "react";
 import Dataset from "../components/Dataset";
 import { DATASET_MAP } from "../data/raw_datasets";
 import orchestrator, { Message, DatasetToolData } from "./api_orchestrator";
+import CircularLoader from "../components/CircularLoader";
 
 function TopBar() {
   return (
     <div>
-      <h1 className="text-4xl font-semibold text-center p-8">Landnalyze</h1>
+      <h1 className="text-4xl font-semibold text-center p-8">Landalyze</h1>
     </div>
   );
 }
@@ -23,17 +24,26 @@ function UserBubble(message: Message) {
 function parseToolData(message: Message) {
   if (message.toolData?.tooltype === "dataset") {
     const data = message.toolData.data as DatasetToolData;
+
+    // Sort the datasets so that selected ones are first
+    const sortedDatasets = data.datasets.sort((a, b) => {
+      const bSelected = b.selected ? 1 : 0;
+      const aSelected = a.selected ? 1 : 0;
+      return bSelected - aSelected; // `true` is treated as 1, `false` as 0
+    });
+
     return (
       <div className="grid grid-cols-3 gap-4 mx-auto">
-        {data.datasets.map((dataset, idx) => (
+        {sortedDatasets.map((dataset, idx) => (
           <Dataset
             key={idx}
-            name={dataset.dataset_name}
+            name={DATASET_MAP[dataset.dataset_name].name}
             description={DATASET_MAP[dataset.dataset_name].description}
             reason={dataset.reason}
             id={dataset.dataset_name}
             thumbnail_url={DATASET_MAP[dataset.dataset_name].thumbnail_url}
             url={DATASET_MAP[dataset.dataset_name].url}
+            wasSelected={dataset.selected}
           />
         ))}
       </div>
@@ -45,7 +55,7 @@ function parseToolData(message: Message) {
 function ModelBubble(message: Message) {
   return (
     <div className="p-4 mb-4">
-      {message.content}
+      <div className="pt-4 pb-4">{message.content}</div>
       {message.toolData && parseToolData(message)}
     </div>
   );
@@ -62,15 +72,13 @@ function ChatScroll(messages: Message[], isLoading: boolean) {
               : ModelBubble(message)}
           </div>
         ))}
-      </div>
-      {/* {isLoading && (
-          <div>
-            <CircularProgress />
-            <button type="button" onClick={() => stop()}>
-              Stop
-            </button>
+        {isLoading && (
+          <div className="p-4 mb-4">
+            Thinking...
+            <CircularLoader />
           </div>
-        )} */}
+        )}
+      </div>
       {/* {error && (
         <>
           <div>An error occurred.</div>
@@ -145,7 +153,7 @@ function BottomChat({
             disabled={isLoading}
             className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
           >
-            {isLoading ? "Loading..." : "Analyze"}
+            {isLoading ? "Thinking..." : "Analyze"}
           </button>
         </form>
       </div>
