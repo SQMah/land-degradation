@@ -37,8 +37,8 @@ def search_datasets(request):
 
 @api_view(['GET'])
 def vizualize_dataset(request):
-    dataset_name = request.GET.get('dataset_name', '')
-    if not dataset_name:
-        return JsonResponse({'error': 'Dataset name is required'}, status=status.HTTP_400_BAD_REQUEST)
+    dataset_id = request.GET.get('dataset_id', '')
+    if not dataset_id:
+        return JsonResponse({'error': 'Dataset ID is required'}, status=status.HTTP_400_BAD_REQUEST)
     
     
