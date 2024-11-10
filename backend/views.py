@@ -34,3 +34,11 @@ def search_datasets(request):
             {'error': str(e)}, 
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+@api_view(['GET'])
+def vizualize_dataset(request):
+    dataset_name = request.GET.get('dataset_name', '')
+    if not dataset_name:
+        return JsonResponse({'error': 'Dataset name is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
