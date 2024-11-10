@@ -4,16 +4,23 @@ import { CircularCheckmark } from "./Checkmark";
 interface DatasetProps {
   name: string;
   id: string;
-  img?: string;
+  thumbnail_url: string;
   description: string;
-  reason: string;
+  reason?: string;
   url: string;
 }
 
-const Dataset = ({ name, id, img, description, reason, url }: DatasetProps) => {
+const Dataset = ({
+  name,
+  thumbnail_url,
+  description,
+  reason,
+  url,
+}: DatasetProps) => {
   const [selected, setSelected] = useState(false);
   const handleClick = () => {
     setSelected(!selected);
+    console.log("Dataset selected:", name);
   };
 
   return (
@@ -40,11 +47,13 @@ const Dataset = ({ name, id, img, description, reason, url }: DatasetProps) => {
       <div className="space-y-4 pl-2">
         <h3 className="text-xl font-semibold">{name}</h3>
 
-        {img && (
-          <div className="relative h-48 overflow-hidden rounded-lg">
-            <img src={img} alt={name} className="object-cover w-full h-full" />
-          </div>
-        )}
+        <div className="relative h-48 overflow-hidden rounded-lg">
+          <img
+            src={thumbnail_url}
+            alt={name}
+            className="object-cover w-full h-full"
+          />
+        </div>
 
         <p className="leading-relaxed">{description}</p>
 
