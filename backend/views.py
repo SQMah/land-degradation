@@ -1,7 +1,7 @@
 # views.py
 import os
 from .agent import openai_select_datasets, plot_google_earth_engine_dataset
-from django.http import JsonResponse, 
+from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
