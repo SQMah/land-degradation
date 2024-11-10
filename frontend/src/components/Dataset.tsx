@@ -12,6 +12,7 @@ interface DatasetProps {
 
 const Dataset = ({
   name,
+  id,
   thumbnail_url,
   description,
   reason,
@@ -46,7 +47,7 @@ const Dataset = ({
       {/* Content */}
       <div className="space-y-4 pl-2">
         <h3 className="text-xl font-semibold">{name}</h3>
-
+        <p className="text-sm italic break-words">{id}</p>
         <div className="relative h-48 overflow-hidden rounded-lg">
           <img
             src={thumbnail_url}
@@ -55,7 +56,7 @@ const Dataset = ({
           />
         </div>
 
-        <p className="leading-relaxed">{description}</p>
+        <p className="text-sm">{description}</p>
 
         <div className="pt-2 border-t border-gray-100">
           <p className="text-sm italic">{reason}</p>

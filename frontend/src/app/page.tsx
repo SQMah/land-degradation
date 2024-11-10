@@ -1,10 +1,8 @@
 "use client";
-
-import { useChat } from "ai/react";
+import { useState } from "react";
 import Dataset from "../components/Dataset";
-import { FormEventHandler, ChangeEventHandler } from "react";
-import { Message } from "@ai-sdk/ui-utils";
-import { RAW_DATASETS } from "@/data/raw_datasets";
+import { DATASET_MAP } from "../data/raw_datasets";
+import orchestrator, { Message, DatasetToolData } from "./api_orchestrator";
 
 function TopBar() {
   return (
@@ -14,39 +12,56 @@ function TopBar() {
   );
 }
 
-function UserBubble({ children }: { children: React.ReactNode }) {
+function UserBubble(message: Message) {
   return (
     <div className="flex justify-end">
-      <div className="bg-blue-500 rounded-xl p-4 mb-4">{children}</div>
+      <div className="bg-blue-500 rounded-xl p-4 mb-4">{message.content}</div>
     </div>
   );
 }
 
-function ModelBubble({ children }: { children: React.ReactNode }) {
-  return <div className="p-4 mb-4">{children}</div>;
+function parseToolData(message: Message) {
+  if (message.toolData?.tooltype === "dataset") {
+    const data = message.toolData.data as DatasetToolData;
+    return (
+      <div className="grid grid-cols-3 gap-4 mx-auto">
+        {data.datasets.map((dataset, idx) => (
+          <Dataset
+            key={idx}
+            name={dataset.dataset_name}
+            description={DATASET_MAP[dataset.dataset_name].description}
+            reason={dataset.reason}
+            id={dataset.dataset_name}
+            thumbnail_url={DATASET_MAP[dataset.dataset_name].thumbnail_url}
+            url={DATASET_MAP[dataset.dataset_name].url}
+          />
+        ))}
+      </div>
+    );
+  }
+  return null;
 }
 
-function ChatScroll(messages: Message[]) {
+function ModelBubble(message: Message) {
+  return (
+    <div className="p-4 mb-4">
+      {message.content}
+      {message.toolData && parseToolData(message)}
+    </div>
+  );
+}
+
+function ChatScroll(messages: Message[], isLoading: boolean) {
   return (
     <div className="flex-grow overflow-y-auto overflow-x-hidden w-full">
       <div className="mx-auto w-[900px] flex flex-col">
-        {messages.map((message) => (
-          <div key={message.id}>
-            {message.role === "user" ? (
-              <UserBubble>{message.content}</UserBubble>
-            ) : (
-              <ModelBubble>{message.content}</ModelBubble>
-            )}
+        {messages.map((message, idx) => (
+          <div key={message.role + idx.toString()}>
+            {message.role == "user"
+              ? UserBubble(message)
+              : ModelBubble(message)}
           </div>
         ))}
-        <ModelBubble>
-          <div className="grid grid-cols-3 gap-4 mx-auto">
-            {RAW_DATASETS.map((dataset) => (
-              <Dataset key={dataset.name} {...dataset} />
-            ))}
-          </div>
-        </ModelBubble>
-        <ModelBubble>bye</ModelBubble>
       </div>
       {/* {isLoading && (
           <div>
@@ -68,12 +83,51 @@ function ChatScroll(messages: Message[]) {
   );
 }
 
-function BottomChat(
-  handleSubmit: FormEventHandler<HTMLFormElement> | undefined,
-  handleInputChange: ChangeEventHandler<HTMLInputElement> | undefined,
-  input: string | number | readonly string[] | undefined,
-  isLoading: boolean | undefined
-) {
+type BottomChatProps = {
+  messages: Message[];
+  setMessages: (prevMessages: Message[]) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+};
+
+function BottomChat({
+  messages,
+  setMessages,
+  isLoading,
+  setIsLoading,
+}: BottomChatProps) {
+  const [input, setInput] = useState<string>("");
+
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setInput(event.target.value);
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsLoading(true);
+
+    const newMessage: Message = {
+      role: "user",
+      content: input,
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]); // Update with the current input
+
+    try {
+      const data = await orchestrator([...messages, newMessage]); // Pass updated messages if needed
+
+      if (data) {
+        setMessages((prevMessages) => [...prevMessages, data]);
+      }
+
+      setInput(""); // Clear the input after submission
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error sending messages:", error);
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="flex items-center w-full p-4 bg-slate-850 relative shadow-[0_-4px_8px_rgba(0,0,0,0.1)]">
       <div className="mx-auto w-[1050px]">
@@ -91,7 +145,7 @@ function BottomChat(
             disabled={isLoading}
             className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
           >
-            Analyze
+            {isLoading ? "Loading..." : "Analyze"}
           </button>
         </form>
       </div>
@@ -100,16 +154,14 @@ function BottomChat(
 }
 
 export default function Page() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      keepLastMessageOnError: true,
-    });
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <div className="flex flex-col justify-center w-screen h-screen">
       {TopBar()}
-      {ChatScroll(messages)}
-      {BottomChat(handleSubmit, handleInputChange, input, isLoading)}
+      {ChatScroll(messages, isLoading)}
+      {BottomChat({ messages, setMessages, isLoading, setIsLoading })}
     </div>
   );
 }
