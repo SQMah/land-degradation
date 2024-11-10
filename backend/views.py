@@ -49,5 +49,9 @@ def vizualize_dataset(request):
         })
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+# @api_view(['GET'])
+# def query(request):
+#     q = request.GET.get('query', '')
+
     

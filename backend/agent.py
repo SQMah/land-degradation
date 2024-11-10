@@ -18,6 +18,10 @@ class DatasetOutput(BaseModel):
 class DatasetsOutput(BaseModel):
     datasets: list[DatasetOutput]
 
+class QueryMode(BaseModel):
+    pass
+    
+
 
 def openai_select_datasets(query, return_json=True):
     api_key = os.getenv("OPENAI_API_KEY")
@@ -64,6 +68,8 @@ def plot_google_earth_engine_dataset(dataset_name):
     Given the dataset name (e.g. "COPERNICUS/S2"), visualize the dataset as a large
     image and send back the HTML for iframing
     """
+    ee.Initialize()
+
     images = ee.ImageCollection(dataset_name)
     images = images.limit(1000).mosaic()
     # info = images.limit(5).getInfo()
