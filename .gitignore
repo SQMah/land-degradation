@@ -23,7 +23,7 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
-
+tmp
 db.sqlite3
 
 packages/react-devtools-core/dist

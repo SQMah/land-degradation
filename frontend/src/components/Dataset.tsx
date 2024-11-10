@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CircularCheckmark } from "./Checkmark";
-import { useDatasetContext } from "@/app/context/DatasetContext";
+import { useDatasetContext } from "../app/context/DatasetContext";
 
 interface DatasetProps {
   name: string;
