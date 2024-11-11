@@ -133,6 +133,7 @@ function BottomChat({
       setInput(""); // Clear the input after submission
       setIsLoading(false);
     } catch (error) {
+      throw error;
       console.error("Error sending messages:", error);
       setIsLoading(false);
     }

@@ -56,6 +56,12 @@ export default async function orchestrator(
     return { role: "assistant", content: rawText };
   }
 
+  if (data.mode === "other"){
+    return {
+      role: "assistant",
+      content: data.payload,
+    }
+  }
   const payload = JSON.parse(data.payload);
   data.payload = payload;
 

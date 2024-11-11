@@ -59,7 +59,7 @@ def general_query(query, context):
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)
     # context looks like "{dataset_name: {selected:bool}}"
-    context = json.loads(context)
+    context = json.loads(context) if context else {}
     relevant_datasets = {
         d["name"]: d["description"]
         for d in datasets
