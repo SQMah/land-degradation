@@ -90,7 +90,6 @@ function ChatScroll(
   vizIndex: number,
   setVizIndex: (idx: number) => void
 ) {
-  console.log(`${vizIndex}.html`);
   return (
     <div className="flex-grow overflow-y-auto overflow-x-hidden w-full">
       <div className="mx-auto w-[900px] flex flex-col">

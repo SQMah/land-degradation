@@ -131,7 +131,7 @@ def openai_select_datasets(query, return_json=True):
         "for each. You are a dataset router. When the user provides "
         "a query, decide whether each dataset is relevant to the query, "
         "along with an explanation of why. Datasets can also be relevant to the query if they are knock on effects of the initial query. For example, if the user asks about drought, GPP or population might also be a relevant dataset as drought has downstream effects on GPP. Keep dataset name and "
-        "dataset id the same."
+        "dataset id the same. Make sure to give a verdict on every provided dataset."
     )
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)

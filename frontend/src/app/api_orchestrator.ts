@@ -53,6 +53,7 @@ export default async function orchestrator(
     const rawText = await res.text();
     return { role: "assistant", content: rawText };
   }
+  console.log(data.payload);
 
   if (data.mode === "other"){
     return {
@@ -60,10 +61,10 @@ export default async function orchestrator(
       content: data.payload,
     }
   }
-  const payload = JSON.parse(data.payload);
-  data.payload = payload;
 
   if (data.mode === "dataset" || data.mode === "init") {
+    const payload = JSON.parse(data.payload);
+    data.payload = payload;
     return {
       role: "assistant",
       content:
