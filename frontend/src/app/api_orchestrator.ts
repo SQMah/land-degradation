@@ -7,7 +7,7 @@ interface AgentResponse {
 
 export interface ToolData {
   tooltype: "dataset" | "plot";
-  data: DatasetToolData | PlotToolData;
+  data: DatasetToolData | string;
 }
 
 interface DatasetEntry {
@@ -19,8 +19,6 @@ interface DatasetEntry {
 export interface DatasetToolData {
   datasets: DatasetEntry[];
 }
-
-export interface PlotToolData {}
 
 export interface Message {
   role: "user" | "assistant";
@@ -53,18 +51,17 @@ export default async function orchestrator(
     const rawText = await res.text();
     return { role: "assistant", content: rawText };
   }
-  console.log(data.payload);
 
-  if (data.mode === "other"){
+  if (data.mode === "other") {
     return {
       role: "assistant",
       content: data.payload,
-    }
+    };
   }
+  const payload = JSON.parse(data.payload);
+  data.payload = payload;
 
   if (data.mode === "dataset" || data.mode === "init") {
-    const payload = JSON.parse(data.payload);
-    data.payload = payload;
     return {
       role: "assistant",
       content:
@@ -74,18 +71,16 @@ export default async function orchestrator(
         data: payload as DatasetToolData,
       },
     };
-  } else if (data.mode === "vizualize") {
+  } else if (data.mode === "visualize") {
     return {
       role: "assistant",
       content: "Here's a plot for you!",
       toolData: {
         tooltype: "plot",
-        data: {} as PlotToolData,
+        data: payload as string,
       },
     };
-  } else if (data.mode === "other") {
-    return { role: "assistant", content: data.payload };
   } else {
-    throw new Error(`Unknown mode: ${data.mode}`);
+    return { role: "assistant", content: data.payload };
   }
 }
