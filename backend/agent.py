@@ -55,21 +55,32 @@ def get_query_mode(query):
     return route
 
 
-def general_query(query):
+def general_query(query, context):
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)
-    dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
+    # context looks like "{dataset_name: {selected:bool}}"
+    context = json.loads(context)
+    relevant_datasets = {
+        d["name"]: d["description"]
+        for d in datasets
+        if d["name"] in context and context[d["name"]]["selected"]
+    }
+    dataset_str = "\n".join(
+        [f"{name}: {description}" for name, description in relevant_datasets.items()]
+    )
+    
+    # dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
 
     api_key = os.getenv("OPENAI_API_KEY")
     openai = OpenAI(api_key=api_key)
     system_prompt = (
         "You are a expert data scientist. Be concise, precise, and factual in "
         "your responses. If you do not know the answer to a question, "
-        "say that you do not know. Do not make up an answer. You have access "
-        "and knowledge of the following datasets:\n"
+        "say that you do not know. Do not make up an answer. The user has selected "
+        "the following datasets as relevant to their query:\n"
         f"{dataset_str}\n"
     )
-    cur_speaker = "user" # assistant
+    cur_speaker = "user"
     messages = [
         {"role": "system", "content": system_prompt},
     ]
@@ -88,7 +99,7 @@ def general_query(query):
     return route
 
 
-def query_router(q):
+def query_router(q, context):
     assert q
     last_query = q[-1]
     query_mode = get_query_mode(last_query)
@@ -100,7 +111,7 @@ def query_router(q):
         payload = plot_google_earth_engine_dataset(last_query)
     else:
         # general chat has all conversations from the past
-        payload = general_query(q)
+        payload = general_query(q, context)
     return {
         "mode": query_mode.value,
         "payload": payload,
