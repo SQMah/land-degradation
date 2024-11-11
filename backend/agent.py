@@ -36,11 +36,9 @@ def get_query_mode(query):
     system_prompt = (
         "For the following user query, determine whether the using is asking to: "
         "1. DATASET: looking for relevant data to a problem \n"
-        "2. INIT: Initially looking to solve a problem (such as "
-        "asking a more broad question, like 'how does temperature affect crops')\n"
-        "3. VIZUALIZE: looking to vizualize existing data\n"
-        "4. ANALYZE: looking to analyze existing data\n"
-        "5. OTHER: other\n"
+        "2. VIZUALIZE: looking to vizualize existing data\n"
+        "3. ANALYZE: looking to analyze existing data\n"
+        "4. OTHER: other\n"
     )
     api_key = os.getenv("OPENAI_API_KEY")
     openai = OpenAI(api_key=api_key)
@@ -154,7 +152,7 @@ def plot_google_earth_engine_dataset(dataset_name):
     Given the dataset name (e.g. "COPERNICUS/S2"), visualize the dataset as a large
     image and send back the HTML for iframing
     """
-    if os.environ.get('USER') == "sqmah":
+    if os.environ.get("USER") == "sqmah":
         ee.Initialize(project="ai-blocks-education")
     else:
         ee.Initialize()

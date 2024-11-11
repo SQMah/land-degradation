@@ -1,3 +1,5 @@
+import { Agent } from "http";
+
 interface AgentResponse {
   mode: string;
   payload: any;
@@ -15,7 +17,6 @@ interface DatasetEntry {
 }
 
 export interface DatasetToolData {
-  query: string;
   datasets: DatasetEntry[];
 }
 
@@ -37,28 +38,35 @@ export default async function orchestrator(
   console.log(state);
   const messageStringList = messages.map((message) => message.content);
   const res = await fetch(
-    `http://127.0.0.1:8000/api/query/?q=${messageStringList}&state=${JSON.stringify(
-      state
-    )}`
+    `http://127.0.0.1:8000/api/query/?q=${JSON.stringify(
+      messageStringList
+    )}&state=${JSON.stringify(state)}`
   );
+
   if (!res.ok) {
     throw new Error(`Error: ${res.statusText}`);
   }
-  let data = await res.json();
-  data = JSON.parse(data) as AgentResponse;
-  if (data.mode === "dataset" || data.mode === "init") {
-    data.datasets = JSON.parse(data.datasets);
-    data.datasets = data.datasets.datasets;
-    console.log("Got data");
-    console.log("Data:", data);
 
+  let data;
+  try {
+    data = (await res.json()) as AgentResponse;
+  } catch (error) {
+    // If response is not JSON, handle as raw text
+    const rawText = await res.text();
+    return { role: "assistant", content: rawText };
+  }
+
+  const payload = JSON.parse(data.payload);
+  data.payload = payload;
+
+  if (data.mode === "dataset" || data.mode === "init") {
     return {
       role: "assistant",
       content:
         "Of course! Here are some datasets that might help you, and reasons why they might be relevant or not relevant:",
       toolData: {
         tooltype: "dataset",
-        data: data as DatasetToolData,
+        data: payload as DatasetToolData,
       },
     };
   } else if (data.mode === "visualize") {
@@ -71,17 +79,6 @@ export default async function orchestrator(
       },
     };
   } else {
+    return { role: "assistant", content: data.payload };
   }
-  // const openai = createOpenAI({
-  //   apiKey: process.env.OpenAI_API_KEY,
-  //   compatibility: "strict", // strict mode, enable when using the OpenAI API
-  // });
-
-  // const result = await streamText({
-  //   model: openai("gpt-4o"),
-  //   system: "You are a helpful assistant.",
-  //   messages,
-  // });
-
-  // return result.toDataStreamResponse();
 }
