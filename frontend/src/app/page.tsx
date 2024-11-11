@@ -6,7 +6,8 @@ import orchestrator, { Message, DatasetToolData } from "./api_orchestrator";
 import CircularLoader from "../components/CircularLoader";
 import { useDatasetContext } from "./context/DatasetContext";
 import IframeRenderer from "../components/IframeRender";
-import { useTheme } from "@emotion/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function TopBar() {
   return (
@@ -69,7 +70,14 @@ function ModelBubble(
 ) {
   return (
     <div className="p-4 mb-4">
-      <div className="pt-4 pb-4">{message.content}</div>
+      <div className="pt-4 pb-4">
+        <div className="">
+          <ReactMarkdown
+            children={message.content}
+            remarkPlugins={[remarkGfm]}
+          />
+        </div>
+      </div>
       {message.toolData && parseToolData(message, vizIndex, setVizIndex)}
     </div>
   );
