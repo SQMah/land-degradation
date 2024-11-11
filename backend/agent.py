@@ -71,7 +71,7 @@ def general_query(query, context):
     for i in range(len(query)):
         if "Of course! Here are some datasets that might help you" in query[i]:
             query[i] = query[i] + "\n" + dataset_str
-    
+
     # dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -229,10 +229,7 @@ def plot_google_earth_engine_dataset(dataset_name):
     # Save the file with the new filename
     earth_map.save(os.path.join(directory, new_filename))
 
-    with open("tmp/map_html.html", "r") as f:
-        html_str = f.read()
-
-    return html_str
+    return ""
 
 
 def get_export_geometry(image_info):
