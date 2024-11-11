@@ -101,6 +101,7 @@ def general_query(query, context):
 
 def query_router(q, context):
     assert q
+    breakpoint()
     last_query = q[-1]
     query_mode = get_query_mode(last_query)
     if query_mode == QueryMode.DATASET:
@@ -133,6 +134,7 @@ def openai_select_datasets(query, return_json=True):
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)
     dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
+
 
     system_prompt += f"\nDatasets:\n{dataset_str}"
 
