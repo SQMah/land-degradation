@@ -68,7 +68,7 @@ def general_query(query, context):
     dataset_str = "\n".join(
         [f"{name}: {description}" for name, description in relevant_datasets.items()]
     )
-    
+
     # dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -80,7 +80,7 @@ def general_query(query, context):
         "the following datasets as relevant to their query:\n"
         f"{dataset_str}\n"
     )
-    cur_speaker = "user"
+    cur_speaker = "user"  # assistant
     messages = [
         {"role": "system", "content": system_prompt},
     ]
@@ -134,7 +134,6 @@ def openai_select_datasets(query, return_json=True):
     with open("datasets/dataset_info.json", "r") as json_file:
         datasets = json.load(json_file)
     dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
-
 
     system_prompt += f"\nDatasets:\n{dataset_str}"
 
@@ -207,7 +206,29 @@ def plot_google_earth_engine_dataset(dataset_name):
     earth_map.add_basemap("ROADMAP")
     earth_map.centerObject((roi), 4)
     earth_map.addLayer(images.clip(roi), None, "SPEI")
-    earth_map.save("tmp/map_html.html")
+
+    # Directory where the .html files are saved
+    directory = "frontend/public"
+
+    # List all files in the directory that have a .html extension
+    existing_files = [f for f in os.listdir(directory) if f.endswith(".html")]
+
+    # Extract numbers from existing .html filenames and find the highest number
+    existing_numbers = [
+        int(f.split(".html")[0])
+        for f in existing_files
+        if f.split(".html")[0].isdigit()
+    ]
+
+    # Determine the next file number
+    next_number = max(existing_numbers) + 1 if existing_numbers else 0
+
+    # Construct the filename
+    new_filename = f"{next_number}.html"
+
+    # Save the file with the new filename
+    earth_map.save(os.path.join(directory, new_filename))
+
     with open("tmp/map_html.html", "r") as f:
         html_str = f.read()
 

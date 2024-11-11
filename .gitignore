@@ -25,6 +25,7 @@ chrome-user-data
 *.swo
 tmp
 db.sqlite3
+*.html
 
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build

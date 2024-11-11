@@ -5,6 +5,8 @@ import { DATASET_MAP } from "../data/raw_datasets";
 import orchestrator, { Message, DatasetToolData } from "./api_orchestrator";
 import CircularLoader from "../components/CircularLoader";
 import { useDatasetContext } from "./context/DatasetContext";
+import IframeRenderer from "../components/IframeRender";
+import { useTheme } from "@emotion/react";
 
 function TopBar() {
   return (
@@ -22,7 +24,11 @@ function UserBubble(message: Message) {
   );
 }
 
-function parseToolData(message: Message) {
+function parseToolData(
+  message: Message,
+  vizData: number,
+  setVizData: (idx: number) => void
+) {
   if (message.toolData?.tooltype === "dataset") {
     const data = message.toolData.data as DatasetToolData;
 
@@ -49,20 +55,33 @@ function parseToolData(message: Message) {
         ))}
       </div>
     );
+  } else if (message.toolData?.tooltype === "plot") {
+    IframeRenderer(`/${vizData}.html`);
+    setVizData((vizData) => vizData + 1);
   }
   return null;
 }
 
-function ModelBubble(message: Message) {
+function ModelBubble(
+  message: Message,
+  vizIndex: number,
+  setVizIndex: (idx: number) => void
+) {
   return (
     <div className="p-4 mb-4">
       <div className="pt-4 pb-4">{message.content}</div>
-      {message.toolData && parseToolData(message)}
+      {message.toolData && parseToolData(message, vizIndex, setVizIndex)}
     </div>
   );
 }
 
-function ChatScroll(messages: Message[], isLoading: boolean) {
+function ChatScroll(
+  messages: Message[],
+  isLoading: boolean,
+  vizIndex: number,
+  setVizIndex: (idx: number) => void
+) {
+  console.log(`${vizIndex}.html`);
   return (
     <div className="flex-grow overflow-y-auto overflow-x-hidden w-full">
       <div className="mx-auto w-[900px] flex flex-col">
@@ -70,9 +89,10 @@ function ChatScroll(messages: Message[], isLoading: boolean) {
           <div key={message.role + idx.toString()}>
             {message.role == "user"
               ? UserBubble(message)
-              : ModelBubble(message)}
+              : ModelBubble(message, vizIndex, setVizIndex)}
           </div>
         ))}
+        {/* {IframeRenderer(`${vizIndex}.html`)} */}
         {isLoading && (
           <div className="p-4 mb-4">
             Thinking...
@@ -167,11 +187,12 @@ function BottomChat({
 export default function Page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [vizIndex, setVizIndex] = useState<number>(0);
 
   return (
     <div className="flex flex-col justify-center w-screen h-screen">
       {TopBar()}
-      {ChatScroll(messages, isLoading)}
+      {ChatScroll(messages, isLoading, vizIndex, setVizIndex)}
       {BottomChat({ messages, setMessages, isLoading, setIsLoading })}
     </div>
   );

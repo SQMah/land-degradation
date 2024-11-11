@@ -20,9 +20,7 @@ export interface DatasetToolData {
   datasets: DatasetEntry[];
 }
 
-export interface PlotToolData {
-  data: JSON;
-}
+export interface PlotToolData {}
 
 export interface Message {
   role: "user" | "assistant";
@@ -78,10 +76,10 @@ export default async function orchestrator(
   } else if (data.mode === "visualize") {
     return {
       role: "assistant",
-      content: "Here are some visualizations of the dataset you selected:",
+      content: "Here's a plot for you!",
       toolData: {
         tooltype: "plot",
-        data: data as PlotToolData,
+        data: {} as PlotToolData,
       },
     };
   } else {
