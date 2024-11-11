@@ -108,8 +108,10 @@ def query_router(q, context):
         payload = openai_select_datasets(last_query)
     elif query_mode == QueryMode.INIT:
         payload = openai_select_datasets(last_query)
-    elif query_mode == QueryMode.VIZUALIZE:
-        payload = plot_google_earth_engine_dataset(last_query)
+    elif query_mode == QueryMode.VIZUALIZE and context:
+        context = json.loads(context)
+        breakpoint()
+        payload = plot_google_earth_engine_dataset(context)
     else:
         # general chat has all conversations from the past
         payload = general_query(q, context)
