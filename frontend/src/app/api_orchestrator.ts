@@ -74,7 +74,7 @@ export default async function orchestrator(
         data: payload as DatasetToolData,
       },
     };
-  } else if (data.mode === "visualize") {
+  } else if (data.mode === "vizualize") {
     return {
       role: "assistant",
       content: "Here's a plot for you!",
@@ -83,7 +83,9 @@ export default async function orchestrator(
         data: {} as PlotToolData,
       },
     };
-  } else {
+  } else if (data.mode === "other") {
     return { role: "assistant", content: data.payload };
+  } else {
+    throw new Error(`Unknown mode: ${data.mode}`);
   }
 }

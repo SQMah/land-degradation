@@ -231,7 +231,7 @@ def plot_google_earth_engine_dataset(dataset_name):
     # Save the file with the new filename
     earth_map.save(os.path.join(directory, new_filename))
 
-    return ""
+    return f"{next_number}"
 
 
 def get_export_geometry(image_info):
