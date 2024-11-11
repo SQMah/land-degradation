@@ -35,7 +35,7 @@ class QueryModeOutput(BaseModel):
 def get_query_mode(query):
     system_prompt = (
         "For the following user query, determine whether the using is asking to: "
-        "1. DATASET: looking for relevant data to a problem \n"
+        "1. DATASET: looking for relevant data to a problem. Does NOT count if they already seem to have data and are asking more about it. \n"
         "2. VIZUALIZE: looking to vizualize existing data\n"
         "3. ANALYZE: looking to analyze existing data\n"
         "4. OTHER: other\n"
@@ -63,12 +63,15 @@ def general_query(query, context):
     relevant_datasets = {
         d["name"]: d["description"]
         for d in datasets
-        if d["name"] in context and context[d["name"]]["selected"]
+        if d["name"] in context and context[d["name"]]["isSelected"]
     }
     dataset_str = "\n".join(
         [f"{name}: {description}" for name, description in relevant_datasets.items()]
     )
-
+    for i in range(len(query)):
+        if "Of course! Here are some datasets that might help you" in query[i]:
+            query[i] = query[i] + "\n" + dataset_str
+    
     # dataset_str = "\n".join([f"{d['name']}: {d['description']}" for d in datasets])
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -76,9 +79,7 @@ def general_query(query, context):
     system_prompt = (
         "You are a expert data scientist. Be concise, precise, and factual in "
         "your responses. If you do not know the answer to a question, "
-        "say that you do not know. Do not make up an answer. The user has selected "
-        "the following datasets as relevant to their query:\n"
-        f"{dataset_str}\n"
+        "say that you do not know. Do not make up an answer."
     )
     cur_speaker = "user"  # assistant
     messages = [
@@ -101,7 +102,6 @@ def general_query(query, context):
 
 def query_router(q, context):
     assert q
-    breakpoint()
     last_query = q[-1]
     query_mode = get_query_mode(last_query)
     if query_mode == QueryMode.DATASET:
@@ -293,11 +293,9 @@ if __name__ == "__main__":
     # Testing the query routing
     # query = "How does storm surge affect human health and migration patterns?"
     # response = query_router(query)
-    # breakpoint()
 
     # query = "How does storm surge affect human health and migration patterns?"
     # mode = get_query_mode(query)
-    # breakpoint()
 
     # for dataset in openai_select_datasets("How does temperature and rainfall affect crops?", return_json=False):
     #     # print(f"{dataset.dataset_name}: {dataset.reason}")

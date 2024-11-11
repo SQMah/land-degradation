@@ -52,7 +52,7 @@ def vizualize_dataset(request):
 
 @api_view(['GET'])
 def query(request):
-    context = request.GET.get('context', '')
+    context = request.GET.get('state', '')
     if 'q' not in request.GET:
         return JsonResponse({'error': 'Query is required'}, status=status.HTTP_400_BAD_REQUEST)
     q = json.loads(request.GET['q'])
