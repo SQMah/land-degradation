@@ -57,8 +57,9 @@ function parseToolData(
       </div>
     );
   } else if (message.toolData?.tooltype === "plot") {
-    IframeRenderer(`/${vizData}.html`);
+    const vizDataString = `${vizData}.html`;
     setVizData((vizData) => vizData + 1);
+    return IframeRenderer(vizDataString);
   }
   return null;
 }

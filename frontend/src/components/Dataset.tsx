@@ -7,7 +7,7 @@ interface DatasetProps {
   id: string;
   thumbnail_url: string;
   description: string;
-  reason: string;
+  reason?: string;
   url: string;
   wasSelected?: boolean;
 }
@@ -65,13 +65,14 @@ const Dataset = ({
         </div>
 
         <p className="text-sm italic">{description}</p>
-
-        <div className="pt-2 mb-4 border-t border-gray-100">
-          <div className="bg-slate-900 p-2 rounded-lg">
-            <p className="text-sm font-bold inline-block">Reason:</p>
-            <p className="text-sm inline-block">{reason}</p>
+        {reason && (
+          <div className="pt-2 mb-4 border-t border-gray-100">
+            <div className="bg-slate-900 p-2 rounded-lg">
+              <p className="text-sm font-bold inline-block">Reason:</p>
+              <p className="text-sm inline-block">{reason}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="absolute bottom-1 right-1">
         <button
